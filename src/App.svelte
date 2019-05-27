@@ -1,27 +1,36 @@
 <script>
-  import ContactCard from "./ContactCard.svelte";
+	import ContactCard from "./ContactCard.svelte";
 
-  let name = "Max";
-  let title = "";
-  let image = "";
-  let description = "";
-  let done = false;
-  let formState = 'empty';
-  let createdContacts = [];
+	let name = "Max";
+	let title = "";
+	let image = "";
+	let description = "";
+	let done = false;
+	let formState = 'empty';
+	let createdContacts = [];
 
-  function addContact(){
-		if(name.trim().length == 0 || title.trim().length == 0 || image.trim().length == 0 || description.trim().length == 0){
-			formState = 'invalid';
-			return; 
-		  }
-		createdContacts = [...createdContacts, {
-			name,
-			jobTitle: title,
-			imageUrl: image,
-			description: description
-		}]; 
-	  	formState = 'done';
-  }
+	function addContact(){
+			if(name.trim().length == 0 || title.trim().length == 0 || image.trim().length == 0 || description.trim().length == 0){
+				formState = 'invalid';
+				return; 
+			}
+			createdContacts = [...createdContacts, {
+				id: Math.random(),
+				name,
+				jobTitle: title,
+				imageUrl: image,
+				description: description
+			}]; 
+			formState = 'done';
+	}
+
+	function deleteFirst(){
+		createdContacts = createdContacts.slice(1);
+	}
+
+	function deleteLast(){
+		createdContacts = createdContacts.slice(0, -1);
+	}
 </script>
 
 <style>
@@ -51,12 +60,18 @@
 </div>
 
 <button on:click={addContact}>Add Contact Card</button>
+<button on:click={deleteFirst}>Delete First</button>
+<button on:click={deleteLast}>Delete Last</button>
+
 {#if formState === 'invalid'}
 <p>invalid inputs</p>
 {:else}
 <p>please enter some data and hit the button</p>
 {/if}
 
-{#each createdContacts as contact}
+{#each createdContacts as contact, index (contact.id)}
+	<h2># {index + 1}</h2>
 	<ContactCard userName={contact.name} jobTitle={contact.title} description={contact.description} userImage={contact.image} />
+{:else}
+	<p>please add some contacts, we found none</p>
 {/each}
